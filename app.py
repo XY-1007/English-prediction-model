@@ -25,12 +25,9 @@ def load_all_artifacts():
     meta_learner = joblib.load(os.path.join(MODEL_DIR, "meta_learner.pkl"))
     feature_names = joblib.load(os.path.join(MODEL_DIR, "feature_names.pkl"))
 
-    # Load pre-computed explainer
-    explainer_path = os.path.join(MODEL_DIR, "et_explainer.pkl")
-    if os.path.exists(explainer_path):
-        explainer = joblib.load(explainer_path)
-    else:
-        explainer = shap.TreeExplainer(base_models['ET'])
+    # Directly initialize TreeExplainer from the in-memory ET model
+    # Avoids cross-environment pickle deserialization errors
+    explainer = shap.TreeExplainer(base_models['ET'])
 
     # Load training data statistics
     summary_path = os.path.join(MODEL_DIR, "data_summary.pkl")
